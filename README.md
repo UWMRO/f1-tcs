@@ -52,7 +52,7 @@ The full API specification is documented [here](https://ascom-standards.org/api/
 
 - [ ] Define the technology for the new telescope UI. This can be easily a webapp (it does not even need a backend since the ASCOM server is already an HTTP server from which the webapp client can fetch directly) but could also be an Electron or [Tauri](https://v2.tauri.app) app (Rust!) Evora does not explicitly need the telescope UI to access the telescope information since it can directly fetch from the ASCOM server.
 - [ ] Determine how to run the ASCOM+SiTech server. We probably want a dedicated computer for this, which doesn't need to be too powerful. Ideally we want this to be a headless computer that simply run the server when it boots up, but it can also be a full computer (this has the advantage that we can also use the SiTech GUI as a backup). We could run Windows natively (with some configuration to launch the server on boot up, see an attempt at instructions [here](SetupOnWindows.md)) or run Linux and try to run the server in [Mono](https://www.mono-project.com). In the latter case we could bundle everything in a Docker image ([here](https://github.com/sdss/lvmpwi/blob/0.0.39/container/Dockerfile) is an example for a different mount with the same approach).
-- [ ] Determine what features exposed by the ASCOM standard we want to display in the new telescope UI. Are there any features that we need that we cannot directly access via ASCOM?
+- [ ] Determine what features exposed by the ASCOM standard we want to display in the new telescope UI. Are there any features that we need that we cannot directly access via ASCOM? Which ones of the ASCOM features are not implemented by the F1 controller?
 - [ ] Choose a name for the new UI.
 
 ## More notes
