@@ -12,9 +12,11 @@ The F1 controller uses the [ASCOM](https://ascom-standards.org/index.htm) interf
 - Controls the mount/dome hardware in a way that is specific to the mount itself.
 - Exposes a standardised interface to the hardware that can be used by any client that uses the ASCOM standard.
 
+Notwithstanding the promises in the ASCOM page, ASCOM effectively can only work on Windows 10+ (Linux/maxOS may be possible with virtualisation, for example using [Mono](https://www.mono-project.com)).
+
 ### Running the ASCOM server with the F1 controller
 
-The F1 controller seems to only provide a driver for Windows (maybe 10, but certainly works with 11) although ASCOM is not itself platform dependent. Here is how to get it to work on a fresh install of Windows 11:
+The F1 controller provides a driver for Windows (maybe 10, but certainly works with 11). Here is how to get it to work on a fresh install of Windows 11:
 
 1. Install ASCOM Alpaca from [here](https://ascom-standards.org/Downloads/Index.htm).
 2. Install the SiTech software from the link above. This will install .NET if it is not present in the system.
@@ -56,4 +58,4 @@ The full API specification is documented [here](https://ascom-standards.org/api/
 ## More notes
 
 - Proposal for how to [run the ASCOM server on Windows without virtualisation](SetupOnWindows.md).
-- ASCOM has some [simulators](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators) that maybe can be used for development instead of using the real SiTech software. For development what we want is a driver that can take different values and that connect to the ASCOM server. This also has the advantage of being multi-platform.
+- ASCOM has some [simulators](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators) that maybe can be used for development instead of using the real SiTech software. For development what we want is a driver that can take different values and that connect to the ASCOM server.
