@@ -52,3 +52,7 @@ The full API specification is documented [here](https://ascom-standards.org/api/
 - [ ] Determine how to run the ASCOM+SiTech server. We probably want a dedicated computer for this, which doesn't need to be too powerful. Ideally we want this to be a headless computer that simply run the server when it boots up, but it can also be a full computer (this has the advantage that we can also use the SiTech GUI as a backup). We could run Windows natively (with some configuration to launch the server on boot up) or run Linux and try to run the server in [Mono](https://www.mono-project.com). In the latter case we could bundle everything in a Docker image ([here](https://github.com/sdss/lvmpwi/blob/0.0.39/container/Dockerfile) is an example for a different mount with the same approach).
 - [ ] Determine what features exposed by the ASCOM standard we want to display in the new telescope UI. Are there any features that we need that we cannot directly access via ASCOM?
 - [ ] Choose a name for the new UI.
+
+## More notes
+
+- Proposal for how to [run the ASCOM server on Windows without virtualisation](SetupOnWindows.md).
