@@ -56,3 +56,4 @@ The full API specification is documented [here](https://ascom-standards.org/api/
 ## More notes
 
 - Proposal for how to [run the ASCOM server on Windows without virtualisation](SetupOnWindows.md).
+- ASCOM has some [simulators](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators) that maybe can be used for development instead of using the real SiTech software. For development what we want is a driver that can take different values and that connect to the ASCOM server. This also has the advantage of being multi-platform.
