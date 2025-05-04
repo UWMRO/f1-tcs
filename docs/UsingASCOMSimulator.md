@@ -29,7 +29,7 @@ This will create a new image from the `Dockerfile` if it does not exists (this m
 
 Now go to the telescope tab and connect the device. This simulates connecting a real hardware mount to the ASCOM server.
 
-![Telescope simulator](SimulatorTelescope.png)
+![Telescope simulator](images/SimulatorTelescope.png)
 
 We can now set a parameter in the telescope and see how the simulator accepts it. For example, we can enable tracking:
 
@@ -43,7 +43,7 @@ $ curl -X GET "http://127.0.0.1:80/api/v1/telescope/0/tracking"
 {"Value":true,"ClientTransactionID":0,"ServerTransactionID":15,"ErrorNumber":0,"ErrorMessage":""}
 ```
 
-![Telescope tracking](SimulatorTracking.png)
+![Telescope tracking](images/SimulatorTracking.png)
 
 You can also play with the API using the Swagger interface exposed at [http://localhost:80/swagger](http://localhost:80/swagger).
 
