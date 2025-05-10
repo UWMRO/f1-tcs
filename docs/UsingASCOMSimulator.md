@@ -2,7 +2,7 @@
 
 ASCOM provides a set of simulators that can be used to test the ASCOM server without the need of the real SiTech software. The simulators are available [here](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators) and can be run over Docker. Because the goal of the ASCOM platform is to provide a standardised interface to astronomical hardware, we can develop an UI that works with the simulator and then use it with the real F1 hardware with few changes (but note that the F1 does not implement the entire API).
 
-> **Note to OSX users**: the simulator repository is designed to run on Windows machines, including the default `docker-compose`. See [Running on Mac OSX](#running-on-mac-osx-arm) below for info on how to run on Mac (as of 03/06/25). 
+> **Note to OSX users**: the simulator repository is designed to run on Windows machines, including the default `docker-compose`. See [Running on Mac OSX](#running-on-mac-osx-arm) below for info on how to run on Mac (as of 03/06/25).
 
 To run the simulators with Docker, first [install Docker](https://docs.docker.com/engine/install/) in your system.
 
@@ -52,8 +52,8 @@ You can also play with the API using the Swagger interface exposed at [http://lo
 
 Version 4 doesn't yet work on Mac OSX - see [ASCOM.Alpaca.Simulators/issues/18](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators/issues/18). Instead, to run the simulator on a Mac M-series computer (as of 03/06/2025):
 
-1. Download the [version 3 x86_64 OSX release](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators/releases/download/v0.3.1/ascom.alpaca.simulators.macos-x64.zip) of the simulator. 
-2. Unzip it and and navigate to the new folder. 
+1. Download the [version 3 x86_64 OSX release](https://github.com/ASCOMInitiative/ASCOM.Alpaca.Simulators/releases/download/v0.3.1/ascom.alpaca.simulators.macos-x64.zip) of the simulator.
+2. Unzip it and and navigate to the new folder.
 3. Run `sudo ./ascom.alpaca.simulators`
 
-You'll get a web browser pointing to `localhost:32323` with the simulator running (Josè's instructions use `:80` traditionally, if someone finds an easy way to change this update these instructions). 
+You'll get a web browser pointing to `localhost:32323` with the simulator running (José's instructions use `:80` traditionally, if someone finds an easy way to change this update these instructions).
