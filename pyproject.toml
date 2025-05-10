@@ -1,0 +1,95 @@
+[project]
+name = "f1-tcs"
+version = "0.1.0a0"
+description = "F1 telescope server"
+authors = [
+    { name = "José Sánchez-Gallego", email = "gallegoj@uw.edu" }
+]
+license = { text = "BSD-3-Clause" }
+readme = "README.md"
+requires-python = ">=3.12,<4"
+
+dependencies = [
+    "fastapi[standard]>=0.112.0",
+    "gunicorn>=22.0.0",
+    "uvicorn[standard]>=0.24.0",
+    "astropy>=6.0.0",
+    "httpx>=0.27.2",
+    "python-multipart>=0.0.9",
+    "fastapi-cache2>=0.2.2",
+    "typing-extensions>=4.12.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/UWMRO/f1-tcs"
+Repository = "https://github.com/UWMRO/f1-tcs"
+
+[dependency-groups]
+dev = [
+    "ipython>=8.0.0",
+    "doc8>=0.8.0",
+    "ipdb>=0.12.3",
+    "ruff>=0.5.0",
+    "poethepoet>=0.24.2",
+    "pytest>=8.3.4",
+    "pytest-sugar>=1.0.0",
+    "pytest-cov>=6.0.0",
+    "pytest-asyncio>=0.25.0",
+]
+
+[tool.uv]
+package = true
+default-groups = ["dev"]
+
+[tool.poe.tasks.dev]
+shell = "fastapi dev --host 0.0.0.0 --port $port --reload src/f1_tcs/app.py"
+args = [
+  { name = "port", default = "8080" }
+]
+
+[tool.ruff]
+line-length = 88
+target-version = 'py312'
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+unfixable = ["F841"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F403", "E402"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["f1-tcs"]
+lines-after-imports = 2
+section-order = ["future", "standard-library", "typing", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.isort.sections]
+typing = ["typing"]
+
+[tool.pytest.ini_options]
+addopts = "--cov f1-tcs --cov-report xml --cov-report html --cov-report term -W ignore"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+branch = true
+include = ["src/f1_tcs/*"]
+omit = [
+    "*/__init__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:",
+    "# pragma: no cover"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/f1_tcs"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/f1_tcs"]
