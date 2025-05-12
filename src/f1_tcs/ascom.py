@@ -16,6 +16,9 @@ import httpx
 from f1_tcs import config
 
 
+__all__ = ["ASCOM", "ASCOMError"]
+
+
 class ASCOMError(Exception):
     """Exception raised for ASCOM errors."""
 
@@ -36,6 +39,17 @@ class ASCOM:
         self.host = host
         self.port = port
         self.device = device
+
+    @classmethod
+    def from_config(cls) -> ASCOM:
+        """Create an ASCOM instance from the configuration file."""
+
+        ascom_config = config["ascom"]
+        return cls(
+            host=ascom_config["host"],
+            port=ascom_config["port"],
+            device=ascom_config["device"],
+        )
 
     async def __call__(
         self,
@@ -163,16 +177,3 @@ class ASCOM:
             return False
         else:
             return True
-
-
-ascom = ASCOM(
-    config["ascom"]["host"],
-    config["ascom"]["port"],
-    device=config["ascom"]["device"],
-)
-
-
-def with_ascom() -> ASCOM:
-    """Dependency to get the ASCOM instance."""
-
-    return ascom

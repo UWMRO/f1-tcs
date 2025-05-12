@@ -11,13 +11,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from f1_tcs.ascom import ASCOM, with_ascom
+from f1_tcs.ascom import ASCOM
+from f1_tcs.dependencies import ascom
 
 
-router = APIRouter(
-    prefix="/status",
-    tags=["status"],
-)
+router = APIRouter(prefix="/status", tags=["status"])
 
 
 class StatusResponse(BaseModel):
@@ -59,7 +57,7 @@ class StatusResponse(BaseModel):
 
 
 @router.get("/pointing", response_model=StatusResponse)
-async def status(ascom: Annotated[ASCOM, Depends(with_ascom)]):
+async def status(ascom: Annotated[ASCOM, Depends(ascom)]):
     """Get the status of the telescope."""
 
     try:

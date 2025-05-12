@@ -13,7 +13,8 @@ from typing import Annotated, AsyncIterator
 
 from fastapi import Depends, FastAPI
 
-from f1_tcs.ascom import ASCOM, with_ascom
+from f1_tcs.ascom import ASCOM
+from f1_tcs.dependencies import ascom
 from f1_tcs.routers.status import router as status_router
 
 
@@ -44,7 +45,7 @@ def ping():
 
 
 @app.get("/test/ascom")
-async def test(ascom: Annotated[ASCOM, Depends(with_ascom)]):
+async def test(ascom: Annotated[ASCOM, Depends(ascom)]):
     """Test the ASCOM connection."""
 
     return await ascom.test()
