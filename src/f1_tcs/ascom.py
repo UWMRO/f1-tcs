@@ -9,10 +9,9 @@ from __future__ import annotations
 import asyncio
 import re
 
-from typing import Annotated, Any, Literal
+from typing import Literal
 
 import httpx
-from pydantic import BaseModel, Field
 
 from f1_tcs import config
 
@@ -28,14 +27,6 @@ class ASCOMError(Exception):
         super().__init__(
             f"ASCOM error on path {self.path}: {self.code}: {self.error_message}"
         )
-
-
-class ASCOMResponse(BaseModel):
-    """Response model for ASCOM requests."""
-
-    result: Annotated[Any, Field(description="Result of the ASCOM request")]
-    error_number: Annotated[int, Field(description="Error number")]
-    error_message: Annotated[str | None, Field(description="Error message")]
 
 
 class ASCOM:
@@ -123,11 +114,11 @@ class ASCOM:
                     path=path,
                 )
 
-        return ASCOMResponse(
-            result=data["Value"],
-            error_number=data["ErrorNumber"],
-            error_message=data["ErrorMessage"] or None,
-        ).model_dump()
+        return {
+            "result": data["Value"],
+            "error_number": data["ErrorNumber"],
+            "error_message": data["ErrorMessage"] or None,
+        }
 
     async def gather(
         self,
