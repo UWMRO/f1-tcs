@@ -48,7 +48,8 @@ class StatusResponse(BaseModel):
         Field(description="Right ascension of the telescope"),
     ]
     declination: Annotated[
-        float | None, Field(description="Declination of the telescope")
+        float | None,
+        Field(description="Declination of the telescope"),
     ]
 
     errors: Annotated[
