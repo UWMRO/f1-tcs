@@ -216,6 +216,7 @@ dependencies = [
     { name = "gunicorn" },
     { name = "httpx" },
     { name = "python-multipart" },
+    { name = "pyyaml" },
     { name = "typing-extensions" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -241,6 +242,7 @@ requires-dist = [
     { name = "gunicorn", specifier = ">=22.0.0" },
     { name = "httpx", specifier = ">=0.27.2" },
     { name = "python-multipart", specifier = ">=0.0.9" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "typing-extensions", specifier = ">=4.12.2" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.24.0" },
 ]

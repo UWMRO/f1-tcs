@@ -9,9 +9,12 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from typing import AsyncIterator
+from typing import Annotated, AsyncIterator
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+
+from f1_tcs.ascom import ASCOM, with_ascom
+from f1_tcs.routers.status import router as status_router
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -25,6 +28,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(swagger_ui_parameters={"tagsSorter": "alpha"}, lifespan=lifespan)
+app.include_router(status_router)
 
 
 @app.get("/")
@@ -32,6 +36,15 @@ def root():
     return {}
 
 
-@app.get("/test")
-def test():
+@app.get("/test/ping")
+def ping():
+    """Confirm the API is running."""
+
     return {"result": True}
+
+
+@app.get("/test/ascom")
+async def test(ascom: Annotated[ASCOM, Depends(with_ascom)]):
+    """Test the ASCOM connection."""
+
+    return await ascom.test()
