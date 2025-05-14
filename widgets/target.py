@@ -1,7 +1,8 @@
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout)
+from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget)
 from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+import qtawesome as qta
 
 class CurrentTarget(QGroupBox):
     """
@@ -18,30 +19,43 @@ class CurrentTarget(QGroupBox):
 
         # In the text entry colunn, add another group box to allow for two forms
         tglayout = QGridLayout()
-        layout.addLayout(tglayout, 0, 0, -1, -1) # Spanning 4 columns
+        tglayout.setSpacing(10)
+        layout.addLayout(tglayout, 0, 0, 4, 1) # May need to resize to occupy multiple rows/columns
+
+        # Add buttons to the right
+        search_button = QPushButton(qta.icon('fa5s.search'), '')
+        search_button.setToolTip("Query online databases for target name")
+        totable_button = QPushButton(qta.icon('fa5s.angle-double-down'), '')
+        totable_button.setToolTip("Add to observation table")
+        layout.addWidget(search_button, 0, 1)
+        layout.addWidget(totable_button, 3, 1)
 
         # Add form layouts
         top_name_layout = QFormLayout()
         mid_dec_layout = QFormLayout()
         mid_alt_layout = QFormLayout()
         bot_epoch_layout = QFormLayout()
-        tglayout.addLayout(top_name_layout, 0, 0, 1, 2)
-        tglayout.addLayout(mid_dec_layout, 1, 0, 2, 1)
-        tglayout.addLayout(mid_alt_layout, 1, 1, 2, 1)
+        tglayout.addLayout(top_name_layout, 0, 0, 1, -1)
+        tglayout.addLayout(mid_dec_layout, 1, 0)
+        tglayout.addLayout(mid_alt_layout, 1, 1)
         tglayout.addLayout(bot_epoch_layout, 3, 0, 1, -1)
 
         # Create params
         self.targetName = QLineEdit()
         self.targetRA = QLineEdit()
         self.targetDec = QLineEdit()
-        self.targetAlt = QLineEdit().setEnabled(False) # TBD
-        self.targetAz = QLineEdit().setEnabled(False) # TBD
+        self.targetAlt = QLineEdit()
+        self.targetAz = QLineEdit()
         self.targetEpoch = QLineEdit()
         self.targetEpoch.setText("J2000")
+
+        # Disable alt/az, TODO
+        self.targetAlt.setDisabled(True)
+        self.targetAz.setDisabled(True)
     
         # Add params to layout
         top_name_layout.insertRow(0, "Name", self.targetName)
-        mid_dec_layout.insertRow(0, "RA", self.targetName)
+        mid_dec_layout.insertRow(0, "RA     ", self.targetRA)
         mid_dec_layout.insertRow(1, "Dec", self.targetDec)
         mid_alt_layout.insertRow(0, "Alt", self.targetAlt)
         mid_alt_layout.insertRow(1, "Az", self.targetAz)
@@ -63,8 +77,51 @@ class CurrentTarget(QGroupBox):
         az = self.targetAz.text()
         epoch = self.targetEpoch.text()
 
-
         return([name, ra, dec, alt, az, epoch])
+
+class ObservationTable(QWidget):
+    def __init__(self):
+        """
+        Observation table widget
+        """
+        super().__init__()
+
+        # Let's start with a QVBox
+        layout = QVBoxLayout(self)
+        
+        # Add table header
+        header_layout = QHBoxLayout()
+        layout.addLayout(header_layout)
+
+        obslabel = QLabel()
+        obslabel.setText("Observation table")
+        header_layout.addWidget(obslabel)
+        header_layout.addStretch(1)
+
+        # Add buttons
+        open_btn = QPushButton(qta.icon('fa6s.folder-open'), '')
+        save_btn = QPushButton(qta.icon('fa5s.save'), '')
+        open_btn.setToolTip("Open list of targets")
+        save_btn.setToolTip("Save CSV of targets")
+
+        header_layout.addWidget(open_btn)
+        header_layout.addWidget(save_btn)
+        header_layout.addStretch(20)
+        
+        up_btn = QPushButton(qta.icon('ei.chevron-up'), '')
+        down_btn = QPushButton(qta.icon('ei.chevron-down'), '')
+        trash_btn = QPushButton(qta.icon('fa6s.trash-can'), '')
+        up_btn.setToolTip("Move selected target up")
+        down_btn.setToolTip("Move selected target down")
+        trash_btn.setToolTip("Delete selected target")
+        header_layout.addWidget(up_btn)
+        header_layout.addWidget(down_btn)
+        header_layout.addWidget(trash_btn)
+
+        # Add the actual table now
+        self.table = QTableWidget(0,4)
+        self.table.setHorizontalHeaderLabels(["Target", "RA", "Dec", "Epoch"])
+        layout.addWidget(self.table)
 
 class TargetWidget(QWidget):
     def __init__(self):
@@ -76,10 +133,16 @@ class TargetWidget(QWidget):
         # Grand layout
         layout = QHBoxLayout(self)
 
-        # Set up target variables
-        self.current_tgt = {} # Name, RA, Dec, Alt, Az, Epoch
-        self.all_tgts = []
+        # Add a left column for target box, observation table
+        left_column = QVBoxLayout()
+        layout.addLayout(left_column)
 
         # Target specification box
         targetBox = CurrentTarget()
-        layout.addWidget(targetBox)
+        left_column.addWidget(targetBox)
+
+        # Observation table box
+        self.obsTable = ObservationTable()
+        left_column.addWidget(self.obsTable)
+
+        # 

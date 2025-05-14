@@ -7,7 +7,8 @@ Created on Sat 05.03.25
 @description: ASCOM frontend to help manage the UW MRO telescope
 """
 
-from PySide6.QtWidgets import (QApplication, QMainWindow, QTabWidget)
+from PySide6.QtWidgets import (QApplication, QMainWindow, QTabWidget, QStyleFactory)
+from qt_material import apply_stylesheet
 from widgets.target import TargetWidget
 
 class TCS(QApplication):
@@ -16,6 +17,9 @@ class TCS(QApplication):
         TCS application.
         """
         super().__init__()
+
+        # Set the style
+        self.setStyle(QStyleFactory.create('Fusion'))
         
     class Window(QMainWindow):
         def __init__(self):
