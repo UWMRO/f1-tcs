@@ -10,7 +10,7 @@ Created on Tue May 13 2025
 from matplotlib import pyplot, colors
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PySide6.QtGui import QPalette
+from qbstyles import mpl_style
 
 class MPLImage(QWidget):
     def __init__(self, title=''):
@@ -26,20 +26,20 @@ class MPLImage(QWidget):
         self.title = QLabel(title)
         layout.addWidget(self.title)
 
+        # Enable darkmode
+        mpl_style(dark=True)
+        # pyplot.style.use('dark_background')
+
         # Add matplotlib canvas to layout
         self.figure = pyplot.figure()
         self.ax = self.figure.add_axes([0,0,1,1])
         self.canvas = FigureCanvasQTAgg(self.figure)
         layout.addWidget(self.canvas)
 
-        # Set the background color of the canvas
-        win_color = self.palette().color(QPalette.Window).getRgbF()
-        plot_color = colors.rgb2hex(win_color)
-        self.figure.set_facecolor(plot_color)
-
         # Hide the axes
-        self.ax.get_xaxis().set_visible(False)
-        self.ax.get_yaxis().set_visible(False)
+        self.ax.get_xaxis().set_visible(True)
+        self.ax.get_yaxis().set_visible(True)
+        self.ax.grid()
 
         # Hide title if not set to anything
         if len(title) == 0:
@@ -55,34 +55,11 @@ class MPLImage(QWidget):
         """
         self.title.setText(str(title))
 
-    def set_image(self, img):
+    def refresh(self):
         """
-        Set the axes to the image and refresh canvas.
-
-        Parameters
-        ----------
-        img : ndarray
+        Refresh canvas.
         """
-        self.ax.cla()
-        self.ax.imshow(img, origin="lower")
         # Refresh the canvas
-        self.ax.draw_artist(self.ax.patch)
-        self.canvas.update()
-        # self.canvas.flush_events()
-        self.canvas.draw()
-    
-    def plot(self, tracings, color = 'blue'):
-        """
-        Plot the provided tracings on the axes.
-
-        Parameters
-        ----------
-        tracings : list
-            List of format [[x], [y]
-        color : String (optional)
-            color to plot in
-        """
-        self.ax.plot(tracings[0], tracings[1], color=color)
         self.ax.draw_artist(self.ax.patch)
         self.canvas.update()
         # self.canvas.flush_events()

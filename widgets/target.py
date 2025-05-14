@@ -12,6 +12,9 @@ from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, Q
 from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import qtawesome as qta
+from astropy.time import Time
+from astroplan.plots import (plot_airmass, dark_style_sheet)
+from astroplan import Observer, FixedTarget
 from .misc import MPLImage
 
 class CurrentTarget(QGroupBox):
@@ -140,16 +143,32 @@ class AirmassSkyplotImages(QWidget):
         """
         super().__init__()
 
+        # Define observer
+        observer = Observer.at_site("mro", timezone="America/Vancouver")
+        observe_time = Time.now()
+
         # Layout
         layout = QVBoxLayout(self)
 
         # Airmass image
-        amImg = MPLImage()
-        layout.addWidget(amImg)
+        self.amImg = MPLImage()
+        tgt = FixedTarget.from_name("Vega")
+        plot_airmass(tgt, observer, observe_time, self.amImg.ax)
+        layout.addWidget(self.amImg)
 
         # Skyplot image
-        spImg = MPLImage()
-        layout.addWidget(spImg)
+        self.spImg = MPLImage()
+        layout.addWidget(self.spImg)
+
+    def plot_airmass(self, target):
+        """
+        Plot airmass on its respective image.
+        """
+
+    def plot_skyplot(self):
+        """
+        Plot skyplot on its respective image.
+        """
 
 class TargetWidget(QWidget):
     def __init__(self):
