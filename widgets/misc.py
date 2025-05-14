@@ -1,4 +1,16 @@
-from 
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 13 2025
+@title: Misc functions and widgets
+@author: Parker Lamb
+@description: Contains misc widgets and functions
+"""
+
+from matplotlib import pyplot, colors
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PySide6.QtGui import QPalette
 
 class MPLImage(QWidget):
     def __init__(self, title=''):

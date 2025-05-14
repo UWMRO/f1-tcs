@@ -1,8 +1,18 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thurs May 5 2025
+@title: Target tab GUI components
+@author: Parker Lamb
+@description: Qt6 widgets to assist with targeting and target list setup. 
+"""
+
 from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget)
 from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import qtawesome as qta
+from .misc import MPLImage
 
 class CurrentTarget(QGroupBox):
     """
@@ -123,6 +133,24 @@ class ObservationTable(QWidget):
         self.table.setHorizontalHeaderLabels(["Target", "RA", "Dec", "Epoch"])
         layout.addWidget(self.table)
 
+class AirmassSkyplotImages(QWidget):
+    def __init__(self):
+        """
+        Airmass and Skyplot images for the targeting tab. 
+        """
+        super().__init__()
+
+        # Layout
+        layout = QVBoxLayout(self)
+
+        # Airmass image
+        amImg = MPLImage()
+        layout.addWidget(amImg)
+
+        # Skyplot image
+        spImg = MPLImage()
+        layout.addWidget(spImg)
+
 class TargetWidget(QWidget):
     def __init__(self):
         """
@@ -139,10 +167,17 @@ class TargetWidget(QWidget):
 
         # Target specification box
         targetBox = CurrentTarget()
+        targetBox.setMinimumWidth(450)
         left_column.addWidget(targetBox)
 
         # Observation table box
         self.obsTable = ObservationTable()
         left_column.addWidget(self.obsTable)
 
-        # 
+        # Add a right column for SkyPlots and Airmass Plots
+        right_column = QVBoxLayout()
+        layout.addLayout(right_column)
+
+        # Add images to column
+        images = AirmassSkyplotImages()
+        right_column.addWidget(images)
