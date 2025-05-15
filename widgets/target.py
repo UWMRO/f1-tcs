@@ -160,7 +160,7 @@ class AirmassSkyplotImages(QWidget):
         # Skyplot image
         self.spImg = MPLCanvas_Polar(self, dpi=100)
         plot_sky(tgt, observer, observe_time, self.spImg.axes)
-        self.spImg.axes.legend()
+        self.spImg.axes.legend(bbox_to_anchor=(1.25, 0))
         layout.addWidget(self.spImg)
 
     def plot_airmass(self, target):
