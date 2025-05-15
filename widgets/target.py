@@ -13,9 +13,9 @@ from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import qtawesome as qta
 from astropy.time import Time
-from astroplan.plots import (plot_airmass, dark_style_sheet)
+from astroplan.plots import (plot_airmass, plot_sky, dark_style_sheet)
 from astroplan import Observer, FixedTarget
-from .misc import MPLImage
+from .misc import MPLCanvas, MPLCanvas_Polar
 
 class CurrentTarget(QGroupBox):
     """
@@ -62,7 +62,7 @@ class CurrentTarget(QGroupBox):
         self.targetEpoch = QLineEdit()
         self.targetEpoch.setText("J2000")
 
-        # Disable alt/az, TODO
+        # Disable alt/az, TODO remove?
         self.targetAlt.setDisabled(True)
         self.targetAz.setDisabled(True)
     
@@ -151,13 +151,16 @@ class AirmassSkyplotImages(QWidget):
         layout = QVBoxLayout(self)
 
         # Airmass image
-        self.amImg = MPLImage()
-        tgt = FixedTarget.from_name("Vega")
-        plot_airmass(tgt, observer, observe_time, self.amImg.ax)
+        tgt = FixedTarget.from_name("Vega") # TODO remove
+        self.amImg = MPLCanvas(self, dpi=100)
+        plot_airmass([tgt], observer, observe_time, self.amImg.axes, use_local_tz=True, brightness_shading=True)
+        self.amImg.axes.legend()
         layout.addWidget(self.amImg)
 
         # Skyplot image
-        self.spImg = MPLImage()
+        self.spImg = MPLCanvas_Polar(self, dpi=100)
+        plot_sky(tgt, observer, observe_time, self.spImg.axes)
+        self.spImg.axes.legend()
         layout.addWidget(self.spImg)
 
     def plot_airmass(self, target):
@@ -186,7 +189,7 @@ class TargetWidget(QWidget):
 
         # Target specification box
         targetBox = CurrentTarget()
-        targetBox.setMinimumWidth(450)
+        targetBox.setMinimumWidth(500)
         left_column.addWidget(targetBox)
 
         # Observation table box

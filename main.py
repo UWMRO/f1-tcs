@@ -31,7 +31,7 @@ class TCS(QApplication):
             # Application setup and backend
             self.version = 0.1
             self.title = "MRO-TCS v{}".format(self.version)
-            self.resize(850,600)
+            self.resize(950,700)
             self.setWindowTitle(self.title)
         
             # Set up all the tabs

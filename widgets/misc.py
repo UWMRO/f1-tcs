@@ -9,8 +9,56 @@ Created on Tue May 13 2025
 
 from matplotlib import pyplot, colors, rcParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from matplotlib.backends.backend_qtagg import FigureCanvas
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QSizePolicy
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 from qbstyles import mpl_style
+
+# Set darkmode from qbstyles
+mpl_style(dark=True)
+
+class MPLCanvas(FigureCanvas):
+    def __init__(self, parent=None, width=5, height=1.5, dpi=200):
+        """
+        Custom class for the base image.
+        
+        See https://www.pythonguis.com/tutorials/pyqt6-plotting-matplotlib/
+        """
+        fig = Figure(dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        # fig, self.axes = plt.subplots(dpi)
+
+        # Some adjustment necessary to convince plot to look okay
+        self.axes.tick_params(labelsize=6)
+        self.axes.xaxis.label.set_size(6)
+        self.axes.yaxis.label.set_size(6)
+        fig.tight_layout()
+        fig.subplots_adjust(left=0.16, bottom=0.25)  # try values like 0.15–0.25
+        
+        # Initialize base function with above params
+        super().__init__(fig)
+
+class MPLCanvas_Polar(FigureCanvas):
+    def __init__(self, parent=None, width=5, height=1.5, dpi=200):
+        """
+        Custom class for the base image.
+        
+        See https://www.pythonguis.com/tutorials/pyqt6-plotting-matplotlib/
+        """
+        fig = Figure(dpi=dpi)
+        self.axes = fig.add_subplot(111, projection='polar')
+        # fig, self.axes = plt.subplots(subplot_kw={'projection': 'polar'}, dpi=dpi)
+
+        # Some adjustment necessary to convince plot to look okay
+        self.axes.tick_params(labelsize=6)
+        self.axes.xaxis.label.set_size(6)
+        self.axes.yaxis.label.set_size(6)
+        fig.tight_layout()
+        # fig.subplots_adjust(top=0.01)  # try values like 0.15–0.25
+        
+        # Initialize base function with above params
+        super().__init__(fig)
 
 class MPLImage(QWidget):
     def __init__(self, title=''):
