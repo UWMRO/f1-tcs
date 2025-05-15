@@ -7,7 +7,7 @@ Created on Tue May 13 2025
 @description: Contains misc widgets and functions
 """
 
-from matplotlib import pyplot, colors
+from matplotlib import pyplot, colors, rcParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from qbstyles import mpl_style
@@ -28,6 +28,7 @@ class MPLImage(QWidget):
 
         # Enable darkmode
         mpl_style(dark=True)
+        rcParams['figure.dpi'] = 50 # TODO potentially remove this
         # pyplot.style.use('dark_background')
 
         # Add matplotlib canvas to layout
