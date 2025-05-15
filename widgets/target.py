@@ -8,7 +8,7 @@ Created on Thurs May 5 2025
 """
 
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget)
+from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget, QTimeEdit)
 from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import qtawesome as qta
@@ -144,34 +144,61 @@ class AirmassSkyplotImages(QWidget):
         super().__init__()
 
         # Define observer
-        observer = Observer.at_site("mro", timezone="America/Vancouver")
-        observe_time = Time.now()
+        self.observer = Observer.at_site("mro", timezone="America/Vancouver")
+        self.observe_time = Time.now()
 
         # Layout
         layout = QVBoxLayout(self)
 
         # Airmass image
-        tgt = FixedTarget.from_name("Vega") # TODO remove
         self.amImg = MPLCanvas(self, dpi=100)
-        plot_airmass([tgt], observer, observe_time, self.amImg.axes, use_local_tz=True, brightness_shading=True)
-        self.amImg.axes.legend()
+        self.plot_airmass()
         layout.addWidget(self.amImg)
 
         # Skyplot image
         self.spImg = MPLCanvas_Polar(self, dpi=100)
-        plot_sky(tgt, observer, observe_time, self.spImg.axes)
-        self.spImg.axes.legend(bbox_to_anchor=(1.25, 0))
         layout.addWidget(self.spImg)
 
-    def plot_airmass(self, target):
-        """
-        Plot airmass on its respective image.
-        """
+        # Add a 'time selector' for the images
+        timeBox = QGroupBox()
+        timeLayout = QHBoxLayout()
+        timeBox.setLayout(timeLayout)
 
-    def plot_skyplot(self):
+        deets_label = QLabel()
+        time_start = QTimeEdit()
+        time_end = QTimeEdit()
+        time_label = QLabel()
+        refresh_button = QPushButton(qta.icon('mdi.refresh'), '')
+        refresh_button.setMaximumWidth(30)
+        time_start.setDisplayFormat('HH:mm')
+        time_end.setDisplayFormat('HH:mm')
+        deets_label.setText("Time range:")
+        time_label.setText("PT")
+
+        timeLayout.addWidget(deets_label)
+        timeLayout.addWidget(time_start)
+        timeLayout.addWidget(time_end)
+        timeLayout.addWidget(time_label)
+        timeLayout.addWidget(refresh_button)
+        layout.addWidget(timeBox)
+
+    def plot_airmass(self, targets=[]):
+        """
+        Plot some targets on an image
+        """
+        plot_airmass(targets, self.observer, self.observe_time, self.amImg.axes, use_local_tz=True, brightness_shading=True)
+        if len(targets) > 0:
+            self.amImg.axes.legend()
+
+    def plot_skyplot(self, targets=[]):
         """
         Plot skyplot on its respective image.
         """
+        for target in targets:
+            # TODO color variations per target
+            plot_sky(target, self.observer, self.observe_time, self.spImg.axes)
+            self.spImg.axes.legend(bbox_to_anchor=(1.25, 0))
+
 
 class TargetWidget(QWidget):
     def __init__(self):
