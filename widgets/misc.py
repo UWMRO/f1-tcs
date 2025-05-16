@@ -29,8 +29,8 @@ class MPLCanvas(FigureCanvas):
 
         # Some adjustment necessary to convince plot to look okay
         self.axes.tick_params(labelsize=6)
-        self.axes.xaxis.label.set_size(6)
-        self.axes.yaxis.label.set_size(6)
+        self.axes.xaxis.label.set_size(7)
+        self.axes.yaxis.label.set_size(7)
         
         # Initialize base function with above params
         super().__init__(fig)

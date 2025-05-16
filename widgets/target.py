@@ -168,29 +168,37 @@ class AirmassSkyplotImages(QWidget):
 
         deets_label = QLabel()
         self.time_start = QDateTimeEdit(QDate.currentDate())
-        self.time_end = QDateTimeEdit(QDate.currentDate().addDays(1))
+        # self.time_end = QDateTimeEdit(QDate.currentDate().addDays(1))
         time_label = QLabel()
-        refresh_button = QPushButton(qta.icon('mdi.refresh'), '')
-        refresh_button.setMaximumWidth(30)
-        self.time_start.setDisplayFormat('MM.dd.yy HH:mm')
-        self.time_end.setDisplayFormat('MM.dd.yy HH:mm')
-        deets_label.setText("Time range:")
+        self.refresh_button = QPushButton(qta.icon('mdi.refresh'), '')
+        self.refresh_button.setMaximumWidth(30)
+        self.time_start.setDisplayFormat('MM/dd @ HH:mm')
+        # self.time_end.setDisplayFormat('MM/dd @ HH:mm')
+        deets_label.setText("Night start:")
         time_label.setText("PT")
 
         timeLayout.addWidget(deets_label)
         timeLayout.addWidget(self.time_start)
-        timeLayout.addWidget(self.time_end)
+        # timeLayout.addWidget(self.time_end)
         timeLayout.addWidget(time_label)
-        timeLayout.addWidget(refresh_button)
+        timeLayout.addWidget(self.refresh_button)
         layout.addWidget(timeBox)
 
     def plot_airmass(self, targets=[]):
         """
         Plot some targets on an image
         """
-        plot_airmass(targets, self.observer, self.observe_time, self.amImg.axes, use_local_tz=True, brightness_shading=True)
+        self.amImg.axes.cla()
+        # plot_airmass(targets, self.observer, self.observe_time.to_datetime(timezone=self.observer.timezone), self.amImg.axes, use_local_tz=True, brightness_shading=True)
+        plot_airmass(targets, self.observer, self.observe_time.to_datetime(timezone=self.observer.timezone), self.amImg.axes, use_local_tz=True, brightness_shading=True)
         if len(targets) > 0:
             self.amImg.axes.legend()
+
+        # We need to reset the axes title sizing for some reason
+        self.amImg.axes.yaxis.get_label().set_fontsize(7)
+        self.amImg.axes.xaxis.get_label().set_fontsize(7)
+
+        self.amImg.draw()
 
     def plot_skyplot(self, targets=[]):
         """
@@ -220,9 +228,6 @@ class TargetWidget(QWidget):
         self.targetBox.setMinimumWidth(500)
         left_column.addWidget(self.targetBox)
         
-        # Add button functionality
-        self.targetBox.totable_button.clicked.connect(self.copy_target_to_table)
-
         # Observation table box
         self.obsTable = ObservationTable()
         left_column.addWidget(self.obsTable)
@@ -234,7 +239,11 @@ class TargetWidget(QWidget):
         # Add images to column
         self.images = AirmassSkyplotImages()
         right_column.addWidget(self.images)
-    
+
+        # Add button functionality
+        self.targetBox.totable_button.clicked.connect(self.copy_target_to_table)
+        self.images.refresh_button.clicked.connect(self.update_plot_timerange)
+
     def copy_target_to_table(self):
         """
         Copy the current target to the targets table.
@@ -259,13 +268,13 @@ class TargetWidget(QWidget):
         Update the timeranges for airmass and skyplot.
         """
         time_start = self.images.time_start.dateTime()
-        time_end = self.images.time_end.dateTime()
+        # time_end = self.images.time_end.dateTime() # We don't need this, just go until sunrise-ish
 
         # We're still operating in PT here - convert to astropy Time objects
-        start_pydt = Time(time_start.toPyDateTime() )
-        end_pydt = Time(time_end.toPyDateTime())
-        dt = end_pydt - start_pydt
-        observe_time = start_pydt + dt*np.linspace(0, 1, 75)
+        start_pydt = Time(time_start.toPyDateTime())
+        # end_pydt = Time(time_end.toPyDateTime())
+        # dt = end_pydt - start_pydt
+        observe_time = start_pydt
 
         # Update observe time and replot both
         self.images.observe_time = observe_time
