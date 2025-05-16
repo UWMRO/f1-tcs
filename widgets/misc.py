@@ -70,7 +70,6 @@ class MPLImage(QWidget):
         # Enable darkmode
         mpl_style(dark=True)
         rcParams['figure.dpi'] = 50 # TODO potentially remove this
-        # pyplot.style.use('dark_background')
 
         # Add matplotlib canvas to layout
         self.figure = pyplot.figure()

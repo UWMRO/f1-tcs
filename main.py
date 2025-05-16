@@ -46,7 +46,6 @@ class TCS(QApplication):
 
             self.setCentralWidget(tabs)
 
-
     def run(self):
         """
         Run the TCS application.

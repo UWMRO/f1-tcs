@@ -7,8 +7,10 @@ Created on Thurs May 5 2025
 @description: Qt6 widgets to assist with targeting and target list setup. 
 """
 
+import numpy as np
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget, QTimeEdit)
+from PySide6.QtCore import QDate
+from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QGridLayout, QTableWidget, QTableWidgetItem, QDateTimeEdit)
 from matplotlib import (colors, pyplot)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import qtawesome as qta
@@ -38,10 +40,10 @@ class CurrentTarget(QGroupBox):
         # Add buttons to the right
         search_button = QPushButton(qta.icon('fa5s.search'), '')
         search_button.setToolTip("Query online databases for target name")
-        totable_button = QPushButton(qta.icon('fa5s.angle-double-down'), '')
-        totable_button.setToolTip("Add to observation table")
+        self.totable_button = QPushButton(qta.icon('fa5s.angle-double-down'), '')
+        self.totable_button.setToolTip("Add to observation table")
         layout.addWidget(search_button, 0, 1)
-        layout.addWidget(totable_button, 3, 1)
+        layout.addWidget(self.totable_button, 3, 1)
 
         # Add form layouts
         top_name_layout = QFormLayout()
@@ -165,19 +167,19 @@ class AirmassSkyplotImages(QWidget):
         timeBox.setLayout(timeLayout)
 
         deets_label = QLabel()
-        time_start = QTimeEdit()
-        time_end = QTimeEdit()
+        self.time_start = QDateTimeEdit(QDate.currentDate())
+        self.time_end = QDateTimeEdit(QDate.currentDate().addDays(1))
         time_label = QLabel()
         refresh_button = QPushButton(qta.icon('mdi.refresh'), '')
         refresh_button.setMaximumWidth(30)
-        time_start.setDisplayFormat('HH:mm')
-        time_end.setDisplayFormat('HH:mm')
+        self.time_start.setDisplayFormat('MM.dd.yy HH:mm')
+        self.time_end.setDisplayFormat('MM.dd.yy HH:mm')
         deets_label.setText("Time range:")
         time_label.setText("PT")
 
         timeLayout.addWidget(deets_label)
-        timeLayout.addWidget(time_start)
-        timeLayout.addWidget(time_end)
+        timeLayout.addWidget(self.time_start)
+        timeLayout.addWidget(self.time_end)
         timeLayout.addWidget(time_label)
         timeLayout.addWidget(refresh_button)
         layout.addWidget(timeBox)
@@ -199,7 +201,6 @@ class AirmassSkyplotImages(QWidget):
             plot_sky(target, self.observer, self.observe_time, self.spImg.axes)
             self.spImg.axes.legend(bbox_to_anchor=(1.25, 0))
 
-
 class TargetWidget(QWidget):
     def __init__(self):
         """
@@ -215,9 +216,12 @@ class TargetWidget(QWidget):
         layout.addLayout(left_column)
 
         # Target specification box
-        targetBox = CurrentTarget()
-        targetBox.setMinimumWidth(500)
-        left_column.addWidget(targetBox)
+        self.targetBox = CurrentTarget()
+        self.targetBox.setMinimumWidth(500)
+        left_column.addWidget(self.targetBox)
+        
+        # Add button functionality
+        self.targetBox.totable_button.clicked.connect(self.copy_target_to_table)
 
         # Observation table box
         self.obsTable = ObservationTable()
@@ -228,5 +232,47 @@ class TargetWidget(QWidget):
         layout.addLayout(right_column)
 
         # Add images to column
-        images = AirmassSkyplotImages()
-        right_column.addWidget(images)
+        self.images = AirmassSkyplotImages()
+        right_column.addWidget(self.images)
+    
+    def copy_target_to_table(self):
+        """
+        Copy the current target to the targets table.
+        """
+        # current_data = [name, ra, dec, alt, az, epoch]
+        current_data = self.targetBox.get_params()
+
+        # QTableWidgetItem is a per-cell widget
+        name = QTableWidgetItem(current_data[0])
+        ra = QTableWidgetItem(current_data[1])
+        dec = QTableWidgetItem(current_data[2])
+        epoch = QTableWidgetItem(current_data[5])
+
+        # Get current row # and add a new one
+        current_row = self.obsTable.table.rowCount()
+        self.obsTable.table.insertRow(current_row)
+        for col, entry in zip(range(4), [name, ra, dec, epoch]):
+            self.obsTable.table.setItem(current_row, col, entry)
+    
+    def update_plot_timerange(self):
+        """
+        Update the timeranges for airmass and skyplot.
+        """
+        time_start = self.images.time_start.dateTime()
+        time_end = self.images.time_end.dateTime()
+
+        # We're still operating in PT here - convert to astropy Time objects
+        start_pydt = Time(time_start.toPyDateTime() )
+        end_pydt = Time(time_end.toPyDateTime())
+        dt = end_pydt - start_pydt
+        observe_time = start_pydt + dt*np.linspace(0, 1, 75)
+
+        # Update observe time and replot both
+        self.images.observe_time = observe_time
+        self.images.plot_airmass()
+        self.images.plot_skyplot()
+
+    def update_plots_from_table(self):
+        """
+        Update each plot with the corresponding data from a table entry. 
+        """
