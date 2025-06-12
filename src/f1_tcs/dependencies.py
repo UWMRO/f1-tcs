@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+from f1_tcs.ascii import F1_ASCII_Server
 from f1_tcs.ascom import ASCOM
 
 
@@ -18,3 +19,12 @@ def ascom() -> ASCOM:
     """Dependency to get the ASCOM instance."""
 
     return ASCOM.from_config()
+
+
+async def ascii() -> F1_ASCII_Server:
+    """Dependency to get the F1_ASCII_Server instance."""
+
+    ascii_client = F1_ASCII_Server.from_config()
+    await ascii_client.connect()
+
+    return ascii_client

@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import logging
 from contextlib import asynccontextmanager
 
 from typing import Annotated, AsyncIterator
@@ -15,10 +14,8 @@ from fastapi import Depends, FastAPI
 
 from f1_tcs.ascom import ASCOM
 from f1_tcs.dependencies import ascom
+from f1_tcs.routers.ascii import router as ascii_router
 from f1_tcs.routers.status import router as status_router
-
-
-logger = logging.getLogger("uvicorn.error")
 
 
 @asynccontextmanager
@@ -30,6 +27,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(swagger_ui_parameters={"tagsSorter": "alpha"}, lifespan=lifespan)
 app.include_router(status_router)
+app.include_router(ascii_router)
 
 
 @app.get("/")

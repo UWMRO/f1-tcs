@@ -1,3 +1,4 @@
+mode: ascii
 ascom:
   # Real F1
   # host: 72.233.250.104
@@ -10,3 +11,7 @@ ascom:
   device: 0
   api_version: v1
   timeout: 5
+
+f1_ascii:
+  host: 72.233.250.104
+  port: 8079

@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import logging
 import pathlib
 
 from yaml import safe_load
@@ -24,6 +25,7 @@ def load_config() -> dict:
 
 
 config = load_config()
+logger = logging.getLogger("uvicorn.error")
 
 
 __all__ = ["config"]

@@ -24,7 +24,7 @@ class ASCOMError(Exception):
 
     def __init__(self, code: int, message: str, path: str = ""):
         self.error_message = message
-        self.code = 0
+        self.code = code
         self.path = path
 
         super().__init__(
