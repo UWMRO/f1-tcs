@@ -73,8 +73,6 @@ class F1_ASCII_Server:
         self.writer.write(command.encode())
         await self.writer.drain()
 
-        print(await self.reader.readline())
-
         await self.disconnect()
 
         return True
