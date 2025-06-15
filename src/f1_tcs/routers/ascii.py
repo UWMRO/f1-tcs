@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 from __future__ import annotations
+import asyncio
 
 from fastapi import APIRouter, Depends
 
@@ -26,7 +27,11 @@ async def sync_to_zenith(ascii: F1_ASCII_Server = Depends(ascii)):
     """Sets the Zenith as the current pointing position of the telescope."""
 
     await ascii.send_command("UnPark")
-    await ascii.send_command("SyncToAltAz 180 89.9")
+    await ascii.send_command("SyncToAltAz 0 89.9")
+    await ascii.send_command("MotorsToAuto")
+
+    await asyncio.sleep(3)
+    await ascii.send_command("Park")
 
     return True
 
@@ -45,6 +50,18 @@ async def goto_cover(ascii: F1_ASCII_Server = Depends(ascii)):
     """Goes to the cover position."""
 
     await ascii.send_command("UnPark")
-    await ascii.send_command("GoToAltAz 180 70")
+    await ascii.send_command("GoToAltAzStop 180 20")
+
+    await asyncio.sleep(70)
+    await ascii.send_command("Abort")
+
+    return True
+
+
+@router.get("/stop", response_model=bool, summary="Stops the telescope")
+async def stop(ascii: F1_ASCII_Server = Depends(ascii)):
+    """Stops the telescope."""
+
+    await ascii.send_command("Abort")
 
     return True
