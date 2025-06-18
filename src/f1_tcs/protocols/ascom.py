@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 
 from typing import Literal
@@ -16,7 +17,7 @@ import httpx
 from f1_tcs import config
 
 
-__all__ = ["ASCOM", "ASCOMError"]
+__all__ = ["ASCOM_Protocol", "ASCOMError"]
 
 
 class ASCOMError(Exception):
@@ -32,7 +33,7 @@ class ASCOMError(Exception):
         )
 
 
-class ASCOM:
+class ASCOM_Protocol:
     """Communication with the ASCOM server."""
 
     def __init__(self, host: str, port: int, device: int = 0):
@@ -41,14 +42,21 @@ class ASCOM:
         self.device = device
 
     @classmethod
-    def from_config(cls) -> ASCOM:
-        """Create an ASCOM instance from the configuration file."""
+    def from_config(cls) -> ASCOM_Protocol:
+        """Create an ``ASCOM_Protocol`` instance from the configuration file."""
 
-        ascom_config = config["ascom"]
+        simulator = os.getenv("F1_TCS_SIMULATOR", "false").lower()
+        if simulator in ("true", "1", "yes"):
+            host = config["ascom"]["simulator"]["host"]
+            port = config["ascom"]["simulator"]["port"]
+        else:
+            host = config["ascom"]["host"]
+            port = config["ascom"]["port"]
+
         return cls(
-            host=ascom_config["host"],
-            port=ascom_config["port"],
-            device=ascom_config["device"],
+            host=host,
+            port=port,
+            device=config["ascom"]["device"],
         )
 
     async def __call__(

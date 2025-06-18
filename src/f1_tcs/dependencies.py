@@ -8,23 +8,20 @@
 
 from __future__ import annotations
 
-from f1_tcs.ascii import F1_ASCII_Server
-from f1_tcs.ascom import ASCOM
+from f1_tcs.protocols.ascii import ASCII_Protocol
+from f1_tcs.protocols.ascom import ASCOM_Protocol
 
 
-__all__ = ["ascom"]
+__all__ = ["ascom", "ascii"]
 
 
-def ascom() -> ASCOM:
+def ascom() -> ASCOM_Protocol:
     """Dependency to get the ASCOM instance."""
 
-    return ASCOM.from_config()
+    return ASCOM_Protocol.from_config()
 
 
-async def ascii() -> F1_ASCII_Server:
-    """Dependency to get the F1_ASCII_Server instance."""
+async def ascii() -> ASCII_Protocol:
+    """Dependency to get the ``ASCII_Protocol`` instance."""
 
-    ascii_client = F1_ASCII_Server.from_config()
-    await ascii_client.connect()
-
-    return ascii_client
+    return ASCII_Protocol.from_config()

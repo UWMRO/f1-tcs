@@ -8,14 +8,12 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from typing import Annotated, AsyncIterator
+from typing import AsyncIterator
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from f1_tcs.ascom import ASCOM
-from f1_tcs.dependencies import ascom
 from f1_tcs.routers.ascii import router as ascii_router
-from f1_tcs.routers.status import router as status_router
+from f1_tcs.routers.ascom import router as status_router
 
 
 @asynccontextmanager
@@ -35,15 +33,8 @@ def root():
     return {}
 
 
-@app.get("/test/ping")
+@app.get("/ping")
 def ping():
     """Confirm the API is running."""
 
     return {"result": True}
-
-
-@app.get("/test/ascom")
-async def test(ascom: Annotated[ASCOM, Depends(ascom)]):
-    """Test the ASCOM connection."""
-
-    return await ascom.test()

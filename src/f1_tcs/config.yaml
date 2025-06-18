@@ -1,12 +1,12 @@
 mode: ascii
-ascom:
-  # Real F1
-  # host: 72.233.250.104
-  # port: 11111
 
-  # Simulator
-  host: 127.0.0.1
-  port: 32323
+ascom:
+  host: 72.233.250.104
+  port: 11111
+
+  simulator:
+    host: 127.0.0.1
+    port: 32323
 
   device: 0
   api_version: v1
@@ -15,3 +15,7 @@ ascom:
 f1_ascii:
   host: 72.233.250.104
   port: 8079
+
+  simulator:
+    host: 127.0.0.1
+    port: 18079

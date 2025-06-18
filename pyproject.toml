@@ -48,6 +48,13 @@ args = [
   { name = "port", default = "9090" }
 ]
 
+[tool.poe.tasks.dev-simulator]
+shell = "fastapi dev --host 0.0.0.0 --port $port --reload src/f1_tcs/app.py"
+args = [
+  { name = "port", default = "9090" },
+]
+env.F1_TCS_SIMULATOR = "true"
+
 [tool.ruff]
 line-length = 88
 target-version = 'py312'

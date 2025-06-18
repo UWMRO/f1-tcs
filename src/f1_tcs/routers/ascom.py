@@ -1,25 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# @Filename: status.py
+# @Filename: ascom.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from f1_tcs.ascom import ASCOM
 from f1_tcs.dependencies import ascom
 
 
-router = APIRouter(prefix="/status", tags=["status"])
+if TYPE_CHECKING:
+    from f1_tcs.protocols.ascom import ASCOM_Protocol
 
 
-class StatusResponse(BaseModel):
-    """Response model for the status endpoint."""
+router = APIRouter(prefix="/ascom", tags=["ascom"])
+
+
+class ASCOMStatusResponse(BaseModel):
+    """Response model for the ASCOM status endpoint."""
 
     utcdate: Annotated[
         str | None,
@@ -56,8 +59,15 @@ class StatusResponse(BaseModel):
     ]
 
 
-@router.get("/pointing", response_model=StatusResponse)
-async def status(ascom: Annotated[ASCOM, Depends(ascom)]):
+@router.get("/test")
+async def test(ascom: Annotated[ASCOM_Protocol, Depends(ascom)]):
+    """Test the ASCOM connection."""
+
+    return await ascom.test()
+
+
+@router.get("/pointing", response_model=ASCOMStatusResponse)
+async def status(ascom: Annotated[ASCOM_Protocol, Depends(ascom)]):
     """Get the status of the telescope."""
 
     try:
@@ -83,7 +93,7 @@ async def status(ascom: Annotated[ASCOM, Depends(ascom)]):
     ):
         ha = data["siderealtime"]["result"] - data["rightascension"]["result"]
 
-    return StatusResponse(
+    return ASCOMStatusResponse(
         utcdate=data["utcdate"]["result"],
         sidereal_time=data["siderealtime"]["result"],
         ha=ha,
