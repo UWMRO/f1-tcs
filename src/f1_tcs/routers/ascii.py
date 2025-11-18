@@ -81,7 +81,9 @@ class StatusResponse(BaseModel):
 
 
 @router.get(
-    "/status", response_model=StatusResponse, summary="Get the status of the telescope"
+    "/status",
+    response_model=StatusResponse,
+    summary="Get the status of the telescope",
 )
 async def status(ascii: ASCII_Protocol = Depends(ascii)):
     """Get the status of the telescope."""
