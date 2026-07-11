@@ -8,14 +8,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from fastapi import Request
 
 from f1_tcs.protocols.ascii import ASCII_Protocol
 from f1_tcs.protocols.ascom import ASCOM_Protocol
-
-
-if TYPE_CHECKING:
-    from fastapi import Request
 
 
 __all__ = ["ascom", "ascii"]
