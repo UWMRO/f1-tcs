@@ -1,6 +1,6 @@
 [project]
 name = "f1-tcs"
-version = "0.1.0"
+version = "0.1.1a1"
 description = "F1 telescope server"
 authors = [
     { name = "José Sánchez-Gallego", email = "gallegoj@uw.edu" }
