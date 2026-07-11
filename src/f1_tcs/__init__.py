@@ -25,7 +25,13 @@ def load_config() -> dict:
 
 
 config = load_config()
+
 logger = logging.getLogger("uvicorn.error")
+
+# Log debug messages.
+logger.setLevel(logging.DEBUG)
+for handler in logger.handlers:
+    handler.setLevel(logging.DEBUG)
 
 
 __all__ = ["config"]
