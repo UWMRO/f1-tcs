@@ -58,10 +58,16 @@ class ASCII_Protocol:
             await self.writer.wait_closed()
             logger.debug(f"Disconnected from ASCII server at {self.host}:{self.port}")
 
+            self.writer = None
+            self.reader = None
+
     def is_connected(self) -> bool:
         """Check if the connection to the F1 ASCII server is active."""
 
-        return self.writer is not None and not self.writer.is_closing()
+        if not self.writer:
+            return False
+
+        return not self.writer.is_closing()
 
     async def send_command(self, command: str) -> str:
         """Send a command to the F1 ASCII server and return the response.
@@ -75,6 +81,11 @@ class ASCII_Protocol:
         # The F1 ASCII server doesn't like if you connect and disconnect continuously,
         # so we keep the socket open and only reconnect if the connection is lost.
         if not self.is_connected():
+            try:
+                await asyncio.wait_for(self.disconnect(), timeout=5)
+            except Exception as e:
+                logger.error(f"Error disconnecting from ASCII server: {e}")
+
             await self.connect()
 
         assert self.writer is not None and self.reader is not None

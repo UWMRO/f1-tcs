@@ -8,8 +8,14 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from f1_tcs.protocols.ascii import ASCII_Protocol
 from f1_tcs.protocols.ascom import ASCOM_Protocol
+
+
+if TYPE_CHECKING:
+    from fastapi import Request
 
 
 __all__ = ["ascom", "ascii"]
@@ -21,7 +27,11 @@ def ascom() -> ASCOM_Protocol:
     return ASCOM_Protocol.from_config()
 
 
-async def ascii() -> ASCII_Protocol:
+async def ascii(request: Request) -> ASCII_Protocol:
     """Dependency to get the ``ASCII_Protocol`` instance."""
 
-    return ASCII_Protocol.from_config()
+    app = request.app
+    if app.state.ascii_instance is None:
+        app.state.ascii_instance = ASCII_Protocol.from_config()
+
+    return app.state.ascii_instance
