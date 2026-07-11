@@ -115,3 +115,5 @@ ENV/
 *.swo
 
 pyrightconfig.json
+
+.envrc
