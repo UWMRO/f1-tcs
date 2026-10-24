@@ -432,7 +432,7 @@ wheels = [
 
 [[package]]
 name = "f1-tcs"
-version = "0.1.1"
+version = "0.1.2a1"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
