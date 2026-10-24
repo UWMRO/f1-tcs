@@ -152,7 +152,7 @@ class ASCOM_Protocol:
         """Gather multiple ASCOM calls into a single request."""
 
         if isinstance(paths[0], (list, tuple)):
-            paths = paths[0]  # type: ignore
+            paths = paths[0]
 
         # Gather the paths into a single request.
         tasks = [

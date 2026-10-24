@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from typing import AsyncIterator
+from typing import AsyncGenerator
 
 from fastapi import FastAPI
 
@@ -19,7 +19,7 @@ from f1_tcs.routers.ascom import router as status_router
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
     """Lifespan context manager for FastAPI app."""
 
     try:

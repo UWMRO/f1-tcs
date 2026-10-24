@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import enum
 
-from typing import TypedDict
+from typing import LiteralString, TypedDict
 
 
 __all__ = ["ScopeStatusMaskbit", "ScopeStatusDict", "parse_scope_status"]
@@ -43,7 +43,7 @@ class ScopeStatusDict(TypedDict):
     """TypedDict for the parsed scope status."""
 
     bool_params: int
-    bool_params_labels: list[str]
+    bool_params_labels: list[LiteralString]
     right_ascension: float
     declination: float
     altitude: float
@@ -126,7 +126,7 @@ def parse_scope_status(status: str) -> ScopeStatusDict:
 
     return ScopeStatusDict(
         bool_params=int(items[0]),
-        bool_params_labels=mask.name.split("|") if mask.name else [],
+        bool_params_labels=mask.name.split("|"),
         right_ascension=float(items[1]),
         declination=float(items[2]),
         altitude=float(items[3]),
