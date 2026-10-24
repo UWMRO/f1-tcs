@@ -106,13 +106,12 @@ async def sync_to_zenith(ascii: ASCII_Protocol = Depends(ascii)):
     """Sets the Zenith as the current pointing position of the telescope."""
 
     try:
-        await ascii.send_command("UnPark")
+        # await ascii.send_command("UnPark")
         await ascii.send_command("SyncToAltAz 0 89.9")
         await ascii.send_command("MotorsToAuto")
 
-        await asyncio.sleep(3)
-
-        await ascii.send_command("Park")
+        # await asyncio.sleep(3)
+        # await ascii.send_command("Park")
     except ASCIIError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

@@ -1,5 +1,12 @@
 # Change Log
 
+## Next release
+
+### 🔧 Fixed
+
+* Fix the `/sync_to_zenith` endpoint. Remove the unpark and park commands which were causing the telescope to move during syncing.
+
+
 ## 0.1.0 - 2026-07-11
 
 ### 🔥 New
