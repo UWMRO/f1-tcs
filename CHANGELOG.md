@@ -9,6 +9,7 @@
 ### ⚙️ Engineering
 
 * Use `ty` for type checking and update dependencies in uv lockfile.
+* Add `lint` workflow.
 
 
 ## 0.1.0 - 2026-07-11
